@@ -1,10 +1,17 @@
 ---
 title: Welcome to my blog
 ---
-### hello!###
+### hello!
 - 1
 - 2
 - 3
 - 4
 - 5
 - 6
+*bold*
+**bold**
+~~delete~~
+:::note alert
+don not click
+:::
+`rgba(0,255,0,0.4)`
