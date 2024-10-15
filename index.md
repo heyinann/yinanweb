@@ -8,10 +8,12 @@ title: Welcome to my blog
 - 4
 - 5
 - 6
+
 *bold*
+
 **bold**
+  
 ~~delete~~
-:::note alert
-don not click
-:::
+
+
 `rgba(0,255,0,0.4)`
