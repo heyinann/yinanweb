@@ -1,0 +1,19 @@
+---
+import Layout from "../layouts/Layout.astro";
+---
+
+<Layout title="My first blog with Astro">
+  <main>
+    <h1 class="title"></h1>
+    <p class="publishedAt"></p>
+    <div class="post"></div>
+  </main>
+</Layout>
+
+<script>
+  const params = new URLSearchParams(window.location.search);
+  const contentId = params.get("contentId");
+  const draftKey = params.get("draftKey");
+
+  console.log(contentId, draftKey);
+</script>
