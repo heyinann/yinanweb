@@ -1,0 +1,356 @@
+@import url('https://fonts.googleapis.com/css2?family=Geologica:wght@300&display=swap');
+
+
+/* 1. CSS Reset (Optional) */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* 2. Global Variables */
+:root {
+  --accent: 136, 58, 234;
+  --accent-light: 224, 204, 250;
+  --accent-dark: 49, 10, 101;
+  --accent-gradient: linear-gradient(45deg, rgb(var(--accent)), rgb(var(--accent-light)) 30%, white 60%);
+}
+
+/* 3. Base Styles */
+html {
+  font-family: system-ui, sans-serif;
+  background-color: #EDEDED;
+  scroll-behavior: auto;
+}
+code {
+  font-family: Menlo, Monaco, 'Lucida Console', 'Liberation Mono', 'DejaVu Sans Mono', 'Bitstream Vera Sans Mono', 'Courier New', monospace;
+}
+
+
+/* 4. Layout and Containers */
+body {
+  font-family: 'Geologica', sans-serif; /* 使用 Geologica 字体 */
+  position: relative; /* 确保body有相对定位 */
+  margin-top: 70px;
+  padding-top: env(safe-area-inset-top);/*确保内容不会被刘海遮住*/
+}
+header {
+  position: fixed; 
+  top:0;
+  z-index: 1000;
+  height: 70px;
+  width: 100vw;
+  background-color: #1CFFA0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* 使子元素在左右两侧分布 */
+  padding: 0 20px; /* 上下左右的间距 */
+}
+
+
+
+/* 5. Components-header */
+.left-nav {
+  display: flex;
+  align-items: center; /* 垂直居中 */
+}
+
+.home {
+  color: #000;
+  font-size: 40px;
+  font-weight: 300;
+  margin-right: 40px; 
+  cursor: pointer;
+}
+
+.article {
+  color: #000;
+  font-size: 40px;
+  font-weight: 300;
+  margin-right: 40px; 
+  cursor: pointer;
+}
+
+.info {
+  margin-left: auto; /* 将 info 推到右边 */
+  margin-right: 20px; /* 距离右边 20px */
+  font-size: 40px;
+  font-weight: 300;
+  cursor: pointer;
+}
+
+/* -----------------------------------------------------------------------trans animation---- */
+.home, .article, .info, .fixed-tag, .fixed-tag.active {
+  transition: all 1.1s cubic-bezier(0.25, 1, 0.5, 1); 
+}
+
+/* -----------------------------------------------------------------------Components-tag---- */ 
+.container{
+  display: flex; /* 主容器 */
+  flex-direction: column; /* 纵向布局 */
+  height: calc(100vh - 70px);
+  overflow: visible; 
+}
+
+.tag-container {
+  z-index: 1999;
+  display: flex;
+  justify-content: flex-start;
+  padding: 20px;
+  position: relative; 
+  width: 100vw;
+  flex-wrap: wrap;
+  left: 0;
+  position: fixed;
+  display: flex;
+}
+
+.tag-button {
+  margin-right: 20px;
+  border: none;
+  cursor: pointer;
+  color: #000;
+  font-family: Geologica;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  background-color: transparent;
+}
+
+/*tag animation*/
+.fixed-tag {
+  position: fixed;
+  line-height: 70px;
+  align-items: center;
+  top:0px;
+  left: 440px; /* 可以根据需要调整位置 */
+  right: 0;
+  max-width: 500px;
+  z-index: 9999; /* 确保它在其他元素之上 */
+  display: flex;
+  align-items: center;
+  font-size: 40px;
+  font-weight: 300;
+  color: #000;
+  margin-right: 40px; /* 设置与其他元素的间距 */
+  transform: translateX(-5px); /* 初始位置偏移 */
+  transition: transform 0.5s ease;
+}
+
+.fixed-tag.active {
+  transform: translateX(0px); /* 最终位置 */
+}
+
+
+/* -----------------------------------------------------------------------img container---- */
+
+.photo-container {
+  height: calc(100vh - 70px); 
+  display: flex; 
+  flex-direction: row; /* 使内部项水平排列 */
+  align-items: flex-start; /* 垂直方向上对齐到顶部 */
+  overflow-x: auto; /* 启用横向滚动 */
+  overflow-y: hidden; /* 禁止垂直滚动 */
+  gap: 20px; 
+  white-space: nowrap; /* 禁止内容换行 */
+  padding-left: 20px;
+}
+
+
+.photo-box-outside {
+  width: 200px; 
+  height: calc(100vh - 130px);
+  flex-direction: column; 
+  display: flex;
+}
+
+
+.photo-box{
+  width: 200px; 
+  display: flex;
+  justify-content: center; 
+  align-items: center;
+  flex: 1;
+  position: relative; 
+}
+
+.photo-item {
+  max-width: 100%; 
+  height: auto; 
+  display: block;
+  transition: opacity 0.3s ease;
+  filter: grayscale(100%); 
+}
+
+.photo-item img {
+  max-width: 100%; 
+  height: auto; 
+  display: block; 
+}
+
+@keyframes moveOverlay {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(30);
+  }
+}
+
+.description {
+  font-size: 16px;
+  align-content: center;
+  height: 70px;
+  z-index: 10;
+  transition: opacity 0.2s ease;
+  opacity: 0;
+  position: relative; 
+}
+
+.description-wrapper {
+  position: absolute;
+  bottom: -70px; 
+  left: 0;
+  transform: translate(100%, 100%);
+  background-color:#EDEDED;
+  width: 100%;
+  height: 70px;
+  z-index: 11; 
+}
+
+/* -----------------------------------------------------------------------scroll bar---- */
+
+.scroll-wrapper {
+  position: fixed;
+  top: 130px; /* 调整为你需要的固定位置 */
+  height: calc(100vh - 30px); /* 保证滚动条高度适配窗口高度 */
+  width: 100vw; /* 占满整个页面宽度 */
+  overflow-y: scroll; /* 在外层容器上设置垂直滚动 */
+  overflow-x: hidden; /* 禁止水平滚动 */
+}
+
+.scroll-content {
+  display: flex;
+  flex-direction: row; /* 内容在水平方向排列 */
+}
+
+/* -----------------------------------------------------------------------hover---- */
+
+.photo-box:hover .photo-item {
+  filter: grayscale(0%) brightness(95%);
+}
+
+
+.photo-box-outside:hover .description-wrapper {
+  animation: moveOverlay 1.3s forwards;
+  transition: transform 0.5s ease-in-out;
+}
+
+.photo-box-outside:hover .description{
+  opacity: 1;
+}
+
+.animated-element {
+  width: 100px; /* 固定方块宽度 */
+  transition: transform 0.3s ease; /* 控制动画 */
+}
+
+
+
+/* -----------------------------------------------------------------------responsive---- */
+
+
+
+@media (max-width: 768px) {
+  header {
+    height: 48px;
+  }
+  body {
+    margin-top: 48px;
+  }
+  .home {
+    font-size: 24px;
+    margin-right: 24px; 
+  }
+  .article {
+    font-size: 24px;
+    margin-right: 24px; 
+  }
+  .info {
+    font-size: 24px;
+    margin-right: 0px; 
+  }
+  .fixed-tag {
+    line-height: 48px;
+    align-items: center;
+    left: 277px;
+    font-size: 24px;
+    margin-right: 24px; 
+  }
+  .tag-container {
+    left: 0;
+    position: fixed;
+    display: flex;
+    padding: 15px 20px 15px 20px;
+  }
+  
+}
+
+@media (max-width: 425px) {
+  header {
+    height: 36px;
+    padding: 0 16px; 
+  }
+  body {
+    margin-top: 36px;
+  }
+  
+  .home {
+    font-size: 20px;
+    margin-right: 16px; 
+
+  }
+  
+  .article {
+    font-size: 20px;
+    margin-right: 16px; 
+  }
+  
+  .info {
+    font-size: 20px;
+    margin-right: 0px; /* 距离右边 20px */
+  }
+
+  .tag-container {
+    left: 0;
+    position: fixed;
+    display: flex;
+    padding: 8px 16px 8px 16px;
+  }
+
+  .tag-button {
+    background-color: transparent; 
+    z-index: 10;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .tag-button::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 100%;
+    width: 100%;
+    height: 100%;
+    background-color: #1CFFA0; 
+    transition: left 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+    z-index: -1;
+  }
+  
+  .tag-button.clicked::after {
+    left: 0;
+  }
+}
+
+

@@ -4,6 +4,11 @@ interface Props {
 }
 
 const { title } = Astro.props;
+
+// Layout.astro
+import "../style/global.css";
+
+
 ---
 
 <!doctype html>
@@ -17,34 +22,19 @@ const { title } = Astro.props;
 		<title>{title}</title>
 	</head>
 	<body>
-		<slot />
+		<header>
+			<div class="left-nav">
+				<h1 class="home">⌫ home</h1>
+				<h1 class="article">&lbrace;&rbrace; articles</h1>
+			</div>
+			<h1 class="nav-item info">︎⌘ info</h1>
+		</header>
+
+			<slot />
+			<!-- 图片将在这里动态插入 -->
+
+			
+		</div>		
 	</body>
 </html>
-<style is:global>
-	:root {
-		--accent: 136, 58, 234;
-		--accent-light: 224, 204, 250;
-		--accent-dark: 49, 10, 101;
-		--accent-gradient: linear-gradient(
-			45deg,
-			rgb(var(--accent)),
-			rgb(var(--accent-light)) 30%,
-			white 60%
-		);
-	}
-	html {
-		font-family: system-ui, sans-serif;
-		background: #1C7724
-	}
-	code {
-		font-family:
-			Menlo,
-			Monaco,
-			Lucida Console,
-			Liberation Mono,
-			DejaVu Sans Mono,
-			Bitstream Vera Sans Mono,
-			Courier New,
-			monospace;
-	}
-</style>
+

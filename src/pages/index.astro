@@ -4,26 +4,211 @@ import Layout from "../layouts/Layout.astro";
 //microCMS呼び出し
 import { getBlogs } from "../library/microcms";
 const response = await getBlogs({ fields: ["id", "title"] });
+import { getImages } from "../library/microcms.ts"; 
+const images = await getImages(); 
+import { getTagsWithPhotos } from '../library/microcms.ts';
+const tags = await getTagsWithPhotos();
+
+
 ---
 
-<Layout title="My first blog with Astro">
+<Layout title="Images Gallery">
   <main>
-    <ul>
-      {
-        response.contents.map((content: any) => (
-          <li>
-            <a href={content.id}>{content.title}</a>
-          </li>
-        ))
-      }
-    </ul>
+    <div class="container">
+
+      
+            <!------ Tag Filter ------>
+              <div class="tag-container">
+                <button class="tag-button" data-tag="all">#All</button>
+                {tags.map(tag => (
+                  <button class="tag-button" data-tag={tag.name}>
+                    #{tag.name}
+                  </button>
+                ))}
+              </div>
+
+        <div class="scroll-wrapper">
+          <div class="scroll-content">
+        
+              <!------ Image Container ------>
+              <div class="photo-container">
+                {images.contents.map(photo => (
+                  <div class="photo-box-outside" data-tags={photo.tagname.join(',')}>
+                    <div class="photo-box">
+                      <div class="description-wrapper"></div>
+                      <div class="photo-item">
+                        <img src={photo.photo.url} alt={photo.description} />
+                      </div>
+                    </div>
+                    
+                    <p class="description">
+                      
+                      {photo.description}
+                      </p>
+                  </div>
+                ))}
+              </div>
+          </div>  
+        </div>
+      </div>
+
+    
+    </div>
   </main>
 </Layout>
 
 <style>
-  main {
-    margin: auto;
-    padding: 1em;
-    max-width: 60ch;
-  }
 </style>
+
+
+<script>
+  const photoContainer = document.querySelector('.photo-container'); // Listen for the scroll event
+
+  window.addEventListener('wheel', (event) => {
+    // Check if photoContainer exists
+    if (photoContainer) {
+      // Prevent default scroll behavior
+      event.preventDefault();
+
+      // Convert vertical scroll into horizontal scroll
+      photoContainer.scrollLeft += event.deltaY;
+    }
+  });
+
+  document.querySelectorAll('.tag-button').forEach(button => {
+  button.addEventListener('click', () => {
+    // 切换当前点击的 tag 的背景色
+    button.classList.toggle('clicked');
+    
+    // 其他 tag 取消点击状态
+    document.querySelectorAll('.tag-button').forEach(btn => {
+      if (btn !== button) {
+        btn.classList.remove('clicked');
+      }
+    });
+
+    if (window.innerWidth <= 430) {  // 手机端
+      // 只改变背景色
+      button.classList.add('clicked');
+    } else { // 电脑端
+      // 清除所有按钮的 fixed-tag 类
+      document.querySelectorAll('.tag-button').forEach(btn => btn.classList.remove('fixed-tag'));
+
+      // 只给当前点击的按钮添加 fixed-tag 类
+      button.classList.add('fixed-tag');
+    }
+  });
+  });
+
+
+  document.addEventListener('DOMContentLoaded', () => {
+  const homeElement = document.querySelector('.home');
+  if (homeElement) {
+    homeElement.addEventListener('click', () => {
+      if (window.innerWidth <= 430) {  // 手机端
+        // 获取所有的按钮并移除类
+        const tagButtons = document.querySelectorAll('.tag-button');
+        tagButtons.forEach(btn => btn.classList.remove('fixed-tag'));
+        tagButtons.forEach(button => button.classList.remove('clicked'));
+        
+        // 给当前点击的按钮添加 fixed-tag 类
+        const activeButton = document.querySelector('.tag-button.clicked');
+        if (activeButton) {
+          activeButton.classList.add('fixed-tag');
+        }
+      } else { // 电脑端
+        // 清除所有按钮的 fixed-tag 类
+        const tagButtons = document.querySelectorAll('.tag-button');
+        tagButtons.forEach(btn => btn.classList.remove('fixed-tag'));
+      }
+    });
+  }
+  });
+
+
+
+  // 手机版本的tag动画
+//   document.querySelectorAll('.tag-button').forEach(button => {
+//   button.addEventListener('click', () => {
+//     // 切换当前点击的 tag 的背景色或位置
+//     button.classList.toggle('clicked');
+    
+//     // 其他 tag 取消点击状态
+//     document.querySelectorAll('.tag-button').forEach(btn => {
+//       if (btn !== button) {
+//         btn.classList.remove('clicked');
+//       }
+//     });
+//   });
+// });
+
+
+// 电脑动画
+// document.querySelectorAll('.tag-button').forEach(button => {
+//   button.addEventListener('click', () => {
+//     // 移除所有按钮的固定状态
+//     document.querySelectorAll('.tag-button').forEach(btn => btn.classList.remove('fixed-tag'));
+
+//     // 将点击的按钮添加到顶部并固定
+//     button.classList.add('fixed-tag');
+//   });
+// });
+
+
+// 之前的home点击
+//   document.querySelector('.home').addEventListener('click', () => {
+//   // 重置所有 tag 按钮的状态
+//   document.querySelectorAll('.tag-button').forEach(button => {
+//     button.classList.remove('fixed-tag');
+//   });
+// });
+
+
+
+  
+ document.addEventListener('DOMContentLoaded', () => {
+  const tagButtons = document.querySelectorAll('.tag-button');
+  const photoItems = document.querySelectorAll('.photo-box-outside');
+
+      tagButtons.forEach(button => {
+      button.addEventListener('click', () => {
+        const selectedTag = button.getAttribute('data-tag');
+
+        // 创建一个集合以追踪已显示的图片
+        const displayedPhotos = new Set<HTMLElement>();
+
+        // 如果点击的是"All"按钮，显示所有图片
+        if (selectedTag === 'all') {
+          photoItems.forEach(photo => {
+            if (photo instanceof HTMLElement) {
+              photo.style.display = 'flex'; // 显示所有图片并恢复其布局
+            }
+          });
+        } else {
+          // 显示匹配标签的图片，隐藏其他图片
+          photoItems.forEach(photo => {
+            if (photo instanceof HTMLElement) {
+              const photoTags = photo.getAttribute('data-tags');
+              // 确保 photoTags 存在并且不为空
+              if (photoTags) {
+                const tagsArray = photoTags.split(',');
+                if (selectedTag && tagsArray.includes(selectedTag)) {
+                  // 如果未显示过，则显示该图片
+                  if (!displayedPhotos.has(photo)) {
+                    photo.style.display = 'flex'; // 显示匹配标签的图片
+                    displayedPhotos.add(photo); // 添加到集合中
+                  }
+                } else {
+                  photo.style.display = 'none'; // 隐藏不匹配的图片
+                }
+              } else {
+                photo.style.display = 'none'; // 如果没有 tags，隐藏图片
+              }
+            }
+          });
+        }
+      });
+    });
+  });
+
+</script>
