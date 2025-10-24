@@ -75,31 +75,96 @@ export const getBlogDetail = async (
   });
 };
 
+
+
 export const getImages = async (queries?: MicroCMSQueries) => {
   try {
-    const response = await client.get<ImageResponse>({ endpoint: "gallery", queries });
-    
-    // 提取每个 photo 中的 tagname 的 name 属性
-    const processedImages = response.contents.map(photo => ({
-      ...photo,
-      tagname: photo.tagname?.map(tag => tag.name) || []  // 提取 tagname 数组中的每个 name
-    }));
+    // 设置分页请求以加载所有图片（一次最大限制为 100）
+    let allImages: any[] = [];
+    let offset = 0;
+    const limit = 100;
 
-    return { ...response, contents: processedImages };
+    while (true) {
+      const response = await client.get<ImageResponse>({
+        endpoint: "gallery",
+        queries: { ...queries, limit, offset },
+      });
+
+      allImages = allImages.concat(
+        response.contents.map((photo) => ({
+          ...photo,
+          tagname: photo.tagname?.map((tag) => tag.name) || [], // 提取 tagname 数组中的每个 name
+        }))
+      );
+
+      if (response.contents.length < limit) break; // 当返回的数据少于限制时，说明已经加载完
+      offset += limit;
+    }
+
+    return { contents: allImages };
   } catch (error) {
     console.error("Failed to fetch images:", error);
     throw error;
   }
 };
 
-// --------------------------------------------------新加入的
 export async function getPhotos(): Promise<Photo[]> {
-  const response = await client.get({
-      endpoint: "gallery",
-      queries: { fields: ["id", "photo", "description"] }
-  });
-  return response.contents as Photo[];
+  try {
+    // 设置分页请求以加载所有图片
+    let allPhotos: Photo[] = [];
+    let offset = 0;
+    const limit = 100;
+
+    while (true) {
+      const response = await client.get({
+        endpoint: "gallery",
+        queries: { limit, offset, fields: ["id", "photo", "description"] },
+      });
+
+      allPhotos = allPhotos.concat(response.contents as Photo[]);
+
+      if (response.contents.length < limit) break; // 数据少于限制值时结束循环
+      offset += limit;
+    }
+
+    return allPhotos;
+  } catch (error) {
+    console.error("Failed to fetch photos:", error);
+    throw error;
+  }
 }
+
+function adjustPhotoContainerWidth() {
+  const photoContainer = document.querySelector(".photo-container");
+  const photoBoxes = document.querySelectorAll(".photo-box-outside");
+
+  if (photoContainer && photoBoxes.length > 0) {
+    // 计算总宽度，包括间距
+    const totalWidth = Array.from(photoBoxes).reduce(
+      (acc, box) => acc + box.offsetWidth + 20, // 20 是 CSS 中的 gap
+      0
+    );
+    photoContainer.style.width = `${totalWidth}px`;
+  } else {
+    console.warn("photo-container 或 photo-box-outside 不存在！");
+  }
+}
+
+// 确保仅在客户端运行调整逻辑
+if (typeof window !== "undefined") {
+  window.addEventListener("load", adjustPhotoContainerWidth);
+  window.addEventListener("resize", adjustPhotoContainerWidth);
+}
+
+
+
+
+
+
+
+
+
+
 
 
 

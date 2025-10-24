@@ -17,6 +17,15 @@
 }
 
 /* 3. Base Styles */
+
+element {
+  cursor: url('../../public/default.png'), auto;
+}
+
+element:active {
+  cursor: url('../../public/point.png'), auto;
+}
+
 html {
   font-family: system-ui, sans-serif;
   background-color: #EDEDED;
@@ -25,7 +34,10 @@ html {
 code {
   font-family: Menlo, Monaco, 'Lucida Console', 'Liberation Mono', 'DejaVu Sans Mono', 'Bitstream Vera Sans Mono', 'Courier New', monospace;
 }
-
+a {
+  text-decoration: none; /* 去除下划线 */
+  color: inherit; /* 保持链接颜色和父元素相同 */
+}
 
 /* 4. Layout and Containers */
 body {
@@ -159,7 +171,7 @@ header {
 
 
 .photo-box-outside {
-  width: 200px; 
+  max-width: 300px; 
   height: calc(100vh - 130px);
   flex-direction: column; 
   display: flex;
@@ -167,12 +179,15 @@ header {
 
 
 .photo-box{
-  width: 200px; 
+  width: 50px; 
+  min-width: 50px;
   display: flex;
   justify-content: center; 
   align-items: center;
   flex: 1;
   position: relative; 
+  transition: width 0.8s cubic-bezier(0.25, 1, 0.5, 1); 
+  overflow: hidden;
 }
 
 .photo-item {
@@ -180,7 +195,8 @@ header {
   height: auto; 
   display: block;
   transition: opacity 0.3s ease;
-  filter: grayscale(100%); 
+  filter: grayscale(100%);
+  transition: transform 0.5s ease;
 }
 
 .photo-item img {
@@ -189,12 +205,15 @@ header {
   display: block; 
 }
 
+/* -----------------------------------------------------------------------descrpition animation---- */
 @keyframes moveOverlay {
   0% {
-    transform: translateX(0);
+    transform: scaleX(1); /* 初始宽度为正常 */
+    transform-origin: right center; /* 从左边开始缩放 */
   }
   100% {
-    transform: translateX(30);
+    transform: scaleX(0); /* 宽度缩小到0 */
+    transform-origin: right center; /* 缩放起点保持在左边 */
   }
 }
 
@@ -206,17 +225,24 @@ header {
   transition: opacity 0.2s ease;
   opacity: 0;
   position: relative; 
+  max-width: 50px;
+  opacity: 0; 
+  /* transition: opacity 0.1s ease 0.2s;  */
 }
+
 
 .description-wrapper {
   position: absolute;
-  bottom: -70px; 
-  left: 0;
-  transform: translate(100%, 100%);
-  background-color:#EDEDED;
+  bottom: -70px; /* 确保描述内容在底部 */
+  left: 0; /* 确保在容器内 */
   width: 100%;
   height: 70px;
-  z-index: 11; 
+  background-color: #EDEDED;
+  z-index: 20;
+  transform: scaleX(1); /* 默认状态下宽度正常 */
+  transform-origin: right center; /* 动画起始位置 */
+  opacity: 0; /* 默认隐藏 */
+  transition: opacity 0.5s ease, transform 1s ease; /* 平滑过渡 */
 }
 
 /* -----------------------------------------------------------------------scroll bar---- */
@@ -237,22 +263,29 @@ header {
 
 /* -----------------------------------------------------------------------hover---- */
 
+.photo-box:hover {
+  width: 300px;
+}
+
 .photo-box:hover .photo-item {
   filter: grayscale(0%) brightness(95%);
 }
 
 
-.photo-box-outside:hover .description-wrapper {
-  animation: moveOverlay 1.3s forwards;
-  transition: transform 0.5s ease-in-out;
+/* .photo-box-outside:hover .description-wrapper {
+  animation: moveOverlay 1.0s forwards;
+  transition: transform cubic-bezier(0.12, 0, 0.98, 1);
+} */
+.photo-box:hover .description-wrapper {
+  opacity: 1; /* hover 时显示 */
+  transform: scaleX(0); /* hover 时触发动画 */
 }
-
 .photo-box-outside:hover .description{
   opacity: 1;
 }
 
 .animated-element {
-  width: 100px; /* 固定方块宽度 */
+  width: 300px; /* 固定方块宽度 */
   transition: transform 0.3s ease; /* 控制动画 */
 }
 
@@ -352,5 +385,3 @@ header {
     left: 0;
   }
 }
-
-

@@ -7,7 +7,7 @@ const { title } = Astro.props;
 
 // Layout.astro
 import "../style/global.css";
-
+import { useState } from 'react';
 
 ---
 
@@ -17,24 +17,30 @@ import "../style/global.css";
 		<meta charset="UTF-8" />
 		<meta name="description" content="Astro description" />
 		<meta name="viewport" content="width=device-width" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<link rel="icon" href="/favicon.gif" />
 		<meta name="generator" content={Astro.generator} />
 		<title>{title}</title>
 	</head>
 	<body>
 		<header>
 			<div class="left-nav">
-				<h1 class="home">⌫ home</h1>
-				<h1 class="article">&lbrace;&rbrace; articles</h1>
+			  <!-- Home 链接 -->
+			  <h1 class="home">
+				<a href="/">⌫ home</a>
+			  </h1>
+			  <!-- Articles 链接 -->
+			  <h1 class="article">
+				<a href="/articles">&lbrace;&rbrace; articles</a>
+			  </h1>
 			</div>
-			<h1 class="nav-item info">︎⌘ info</h1>
-		</header>
-
+			<!-- Info 链接 -->
+			<h1 class="nav-item info">
+			  <a href="/info">⌘ info</a>
+			</h1>
+		  </header>
+		<main>
 			<slot />
-			<!-- 图片将在这里动态插入 -->
-
-			
-		</div>		
+		</main>		
 	</body>
 </html>
 

@@ -1,0 +1,58 @@
+--- 
+// 这里可以添加页面的元数据，譬如标题
+title: "Info Page"
+import Layout from "../layouts/Layout.astro";
+import "../style/global.css";
+---
+
+
+
+
+<Layout>
+  <h1>Turning trash into treasure on the road
+    Noticing what others ignore</h1>
+  <img src="/default.png" class="draggable" id="draggableImage" />
+
+  <script src="https://cdn.jsdelivr.net/npm/interactjs/dist/interact.min.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+
+      
+      // 初始化 interact.js
+      interact('#draggableImage').draggable({
+        // 设置拖动事件监听器
+        listeners: {
+          start(event) {
+            console.log('Drag started', event); // 可选：调试输出
+          },
+          move(event) {
+            const target = event.target;
+            const x = (parseFloat(target.getAttribute('data-x')) || 0) + event.dx;
+            const y = (parseFloat(target.getAttribute('data-y')) || 0) + event.dy;
+            target.style.transform = `translate(${x}px, ${y}px)`;
+            target.setAttribute('data-x', x);
+            target.setAttribute('data-y', y);
+          },
+          end(event) {
+            console.log('Drag ended', event); // 可选：调试输出
+          },
+        },
+      });
+    });
+  </script>
+
+
+  <style>
+    h1 {
+      font-size: 2rem;
+      margin-left: 20px;
+      position: fixed; /* 固定定位 */
+      bottom: 20px; /* 距离屏幕底部 20px */
+    }
+
+    .draggable {
+      cursor: pointer; /* 设置拖动图片的光标为指针 */
+    }
+  </style>
+
+</Layout>
